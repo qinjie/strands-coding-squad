@@ -1,9 +1,0 @@
-Flask==2.3.3
-Flask-Caching==2.1.0
-python-dotenv==1.0.0
-requests==2.31.0
-Werkzeug==2.3.7
-pytest==7.4.0
-pytest-cov==4.1.0
-redis==5.0.0
-gunicorn==21.2.0

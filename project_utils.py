@@ -177,8 +177,8 @@ def _create_subfolders(project_path: Path) -> None:
         "src/tests",        # Test files
         "src/config",       # Configuration files
         "docs",             # Documentation
-        "docs/requirements", # Business analysis documents
-        "docs/architecture", # Software architecture documents
+        "docs/requirements",  # Business analysis documents
+        "docs/architecture",  # Software architecture documents
         "docs/reviews",     # Code review documents
         "docs/api",         # API documentation
         "assets",           # Static resources
@@ -675,57 +675,3 @@ def _update_project_readme_progress(current_content: str, agent_name: str, agent
     )
 
     return updated_content
-
-
-# Function to load configuration from an environment file
-
-def load_aws_cred(env_file: str) -> Dict[str, str]:
-    """
-    Load AWS credentials from a .env file.
-    """
-    if not os.path.exists(env_file):
-        return None
-
-    config = dotenv_values(env_file)
-
-    # Config must contains these keys
-    for key in ['AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY', 'AWS_DEFAULT_REGION', 'AWS_SESSION_TOKEN']:
-        if key not in config:
-            print(f"Missing required AWS credential: {key}")
-            return None
-    # Validate the values
-    if not validate_aws_cred(
-        access_key_id=config.get('AWS_ACCESS_KEY_ID'),
-        secret_access_key=config.get('AWS_SECRET_ACCESS_KEY'),
-        region=config.get('AWS_DEFAULT_REGION'),
-        session_token=config.get('AWS_SESSION_TOKEN', None)
-    ):
-        return None
-
-    return config
-
-
-def validate_aws_cred(
-    access_key_id,
-    secret_access_key,
-    region,
-    session_token=None
-) -> bool:
-    """
-    Validate AWS credentials by making a simple STS call.
-    Returns True if valid, False otherwise.
-    """
-    try:
-        client = boto3.client(
-            'sts',
-            aws_access_key_id=access_key_id,
-            aws_secret_access_key=secret_access_key,
-            aws_session_token=session_token,
-            region_name=region
-        )
-        # This call will throw an error if the credentials are invalid
-        client.get_caller_identity()
-        return True
-    except (ClientError, NoCredentialsError) as e:
-        print(f"Invalid AWS credentials: {e}")
-        return False
