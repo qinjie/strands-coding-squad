@@ -1,0 +1,5 @@
+{
+  "categories": ["politics", "business"],
+  "search_terms": ["election", "technology"],
+  "error_paths": ["/invalid-endpoint"]
+}

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}{{ article.title }} - Singapore News{% endblock %}
+
+{% block content %}
+<div class="article-container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+            <li class="breadcrumb-item active">Article</li>
+        </ol>
+    </nav>
+
+    <article class="bg-white p-4 rounded shadow-sm">
+        <header class="mb-4">
+            <h1 class="article-title">{{ article.title }}</h1>
+            <div class="article-meta">
+                {% if article.source_name %}
+                <span class="badge bg-primary me-2">{{ article.source_name }}</span>
+                {% endif %}
+                <span class="text-muted">
+                    <i class="far fa-clock me-1"></i>{{ article.formatted_date }}
+                </span>
+                {% if article.author %}
+                <span class="text-muted ms-3">
+                    <i class="far fa-user me-1"></i>{{ article.author }}
+                </span>
+                {% endif %}
+            </div>
+        </header>
+
+        {% if article.url_to_image %}
+        <div class="article-image-container mb-4">
+            <img src="{{ article.url_to_image }}" class="img-fluid rounded" alt="{{ article.title }}">
+        </div>
+        {% endif %}
+
+        <div class="article-content">
+            {% if article.description %}
+            <div class="lead mb-4">
+                {{ article.description }}
+            </div>
+            {% endif %}
+
+            {% if article.content %}
+            <div class="article-body">
+                {{ article.content }}
+            </div>
+            {% endif %}
+
+            <div class="mt-4">
+                <a href="{{ article.url }}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                    <i class="fas fa-external-link-alt me-1"></i>Read Full Article
+                </a>
+            </div>
+        </div>
+    </article>
+
+    <div class="mt-4">
+        <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Back to News
+        </a>
+    </div>
+</div>
+{% endblock %}

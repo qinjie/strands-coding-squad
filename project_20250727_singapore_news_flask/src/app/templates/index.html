@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if category and category != 'all' %}
+        {{ category|capitalize }} News - Singapore News
+    {% else %}
+        Latest News - Singapore News
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">
+                {% if category and category != 'all' %}
+                    {{ category|capitalize }} News
+                {% else %}
+                    Latest News in Singapore
+                {% endif %}
+            </h1>
+            <p class="lead text-muted">
+                Stay updated with the most recent news from Singapore
+            </p>
+        </div>
+    </div>
+
+    {% if articles %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for article in articles %}
+                <div class="col">
+                    <div class="card h-100 news-card">
+                        <div class="card-img-container">
+                            <img src="{{ article.default_image }}" class="card-img-top" alt="{{ article.title }}">
+                            {% if article.source_name %}
+                                <span class="badge bg-primary source-badge">{{ article.source_name }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ article.title }}</h5>
+                            <p class="card-text">{{ article.short_description }}</p>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">{{ article.formatted_date }}</small>
+                                <a href="{{ url_for('main.article', 
+                                                    title=article.title,
+                                                    url=article.url,
+                                                    source_id=article.source_id,
+                                                    source_name=article.source_name,
+                                                    author=article.author,
+                                                    description=article.description,
+                                                    url_to_image=article.url_to_image,
+                                                    published_at=article.published_at,
+                                                    content=article.content) }}" 
+                                   class="btn btn-sm btn-outline-primary">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if total_pages > 1 %}
+            <nav class="mt-5">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item {% if page == 1 %}disabled{% endif %}">
+                        <a class="page-link" href="{{ url_for('main.index', category=category, page=page-1) if page > 1 else '#' }}">
+                            Previous
+                        </a>
+                    </li>
+                    
+                    {% for p in range(max(1, page-2), min(total_pages+1, page+3)) %}
+                        <li class="page-item {% if p == page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('main.index', category=category, page=p) }}">
+                                {{ p }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                    
+                    <li class="page-item {% if page == total_pages %}disabled{% endif %}">
+                        <a class="page-link" href="{{ url_for('main.index', category=category, page=page+1) if page < total_pages else '#' }}">
+                            Next
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-info">
+            <h4 class="alert-heading">No articles found!</h4>
+            <p>There are currently no news articles available for this category. Please try another category or check back later.</p>
+        </div>
+    {% endif %}
+{% endblock %}
